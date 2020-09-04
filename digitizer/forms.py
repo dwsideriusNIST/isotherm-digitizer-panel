@@ -64,10 +64,14 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             case_sensitive=False)
 
         # digitizer info
-        self.inp_source_type = pw.TextInput(name='Source type',
-                                            placeholder='Figure 1')
         self.inp_tabular = pw.Checkbox(
             name='Tabular Data (i.e., not digitized from a graphical source)')
+        self.inp_source_button = pw.RadioButtonGroup(
+            name='Source Type',
+            options=['Figure', 'Table'],
+            buttontype='success')
+        self.inp_source_id = pw.TextInput(
+            placeholder='Source Number; e.g., 1, 2, S3, etc.')
         self.inp_digitizer = pw.TextInput(name='Digitizer',
                                           placeholder='Your full name')
 
@@ -103,7 +107,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
             self.inp_adsorption_units,
             pn.pane.HTML('<h2>Digitization</h2>'),
-            self.inp_source_type,
+            pn.Row(pn.pane.HTML('Source Type'), self.inp_source_button,
+                   self.inp_source_id),
             self.inp_tabular,
             self.inp_digitizer,
             pn.Row(self.btn_plot, self.btn_prefill),
@@ -116,7 +121,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         return [
             self.inp_doi, self.inp_adsorbent, self.inp_temperature,
             self.inp_isotherm_data, self.inp_pressure_units,
-            self.inp_adsorption_units, self.inp_source_type, self.inp_digitizer
+            self.inp_adsorption_units, self.inp_digitizer,
+            self.inp_source_button, self.inp_source_id
         ] + self.inp_adsorbates.inputs
 
     def on_change_doi(self, event):
@@ -236,7 +242,8 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             self.inp_adsorption_units,
             pn.Row(self.inp_composition_type, self.inp_concentration_units),
             pn.pane.HTML('<h2>Digitization</h2>'),
-            self.inp_source_type,
+            pn.Row(pn.pane.HTML('Source Type'), self.inp_source_button,
+                   self.inp_source_id),
             self.inp_digitizer,
             pn.Row(self.btn_plot, self.btn_prefill),
             self.out_info,

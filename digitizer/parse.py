@@ -63,7 +63,8 @@ def prepare_isotherm_dict(form):
     if form.__class__.__name__ == 'IsothermMultiComponentForm':
         data['compositionType'] = form.inp_composition_type.value
         data['concentrationUnits'] = form.inp_concentration_units.value
-    data['articleSource'] = form.inp_source_type.value
+    data[
+        'articleSource'] = form.inp_source_button.value + ' ' + form.inp_source_ID.value
     if form.inp_tabular.value:
         data['tabular_data'] = True
     data['digitizer'] = form.inp_digitizer.value
