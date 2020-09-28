@@ -77,6 +77,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         self.inp_adsorbates = Adsorbates(show_controls=False, )
         self.btn_plot = pn.widgets.Button(name='Plot', button_type='primary')
         self.btn_plot.on_click(self.on_click_plot)
+        self.btn_reset = pn.widgets.Button(name='Reset', button_type='primary')
+        self.btn_reset.on_click(self.on_click_reset)
 
         for inp in self.required_inputs:
             inp.css_classes = ['required']
@@ -102,6 +104,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                 for data extraction."""),
             self.inp_isotherm_data,
             self.inp_tabular,
+            self.btn_reset,
             pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
             self.out_info,
         )
@@ -158,6 +161,38 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                                    filename=self.inp_figure_image.filename) if self.inp_figure_image.value else None
         self.plot.update(data, figure_image=figure_image)
         self.tabs.active = 2
+
+    def on_click_reset(self, event):  # pylint: disable=unused-argument
+        """Reset the form to initial settings."""
+
+        # Generic Handler
+        for element in [
+                self.inp_digitizer,
+                self.inp_doi,
+                self.inp_source_type,
+                self.inp_measurement_type,
+                self.inp_adsorbent,
+                self.inp_temperature,
+                self.inp_isotherm_type,
+                self.inp_pressure_units,
+                self.inp_saturation_pressure,
+                #self.inp_pressure_scale,  #pressure scale is handled automatically (?)
+                self.inp_adsorption_units,
+                self.inp_isotherm_data
+        ]:
+            element.value = None
+
+        # Specific Handlers
+        self.inp_tabular.value = False
+        # self.inp_figure_image.value = None # not working
+
+        # Reset adsorbates
+        for _ in range(1, len(self.inp_adsorbates.data)):
+            self.inp_adsorbates.remove(self.inp_adsorbates.data[-1])
+        self.inp_adsorbates.data[0].inp_name.value = None
+
+        # Reset the error log
+        self.log('Press "Plot" in order to download json.', level='info')
 
     def log(self, msg, level='info'):
         """Print log message.
@@ -235,6 +270,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
                 for data extraction."""),
             self.inp_isotherm_data,
             self.inp_tabular,
+            self.btn_reset,
             pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
             self.out_info,
         )
